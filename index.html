@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CampusFind AI | Lost & Found Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: linear-gradient(135deg, #0f172a, #020617); color: #e5e7eb; min-height: 100vh; }
+
+        /* Navbar */
+        .navbar { width: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 1000; }
+        .navbar-inner { max-width: 1600px; margin: 0 auto; padding: 18px 8%; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 26px; font-weight: 700; color: #38bdf8; }
+        .logo span { color: #22c55e; }
+        .nav-links { list-style: none; display: flex; gap: 28px; align-items: center; }
+        .nav-links a { text-decoration: none; color: #e5e7eb; font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #38bdf8; }
+
+        /* Navbar Buttons */
+        .nav-btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; transition: 0.3s; text-decoration: none; }
+        .login-btn { background-color: #38bdf8; color: #020617 !important; }
+        .register-btn { background-color: #22c55e; color: #020617 !important; }
+        .logout-btn { background-color: #ef4444; color: white !important; cursor: pointer; border: none; }
+
+        /* Hero Section */
+        .hero { min-height: 80vh; display: flex; justify-content: center; align-items: center; text-align: center; }
+        .hero-content h1 { font-size: 48px; margin-bottom: 15px; }
+        .hero-content h1 span { color: #38bdf8; }
+        .hero-buttons { display: flex; gap: 15px; margin-top: 25px; justify-content: center; }
+        
+        .btn { padding: 14px 22px; border-radius: 12px; font-weight: 600; cursor: pointer; text-decoration: none; transition: 0.3s; display: inline-block; }
+        .btn.primary { background: linear-gradient(135deg, #38bdf8, #22c55e); color: #020617; }
+        .btn.secondary { border: 2px solid #38bdf8; color: #38bdf8; }
+
+        .features { padding: 60px 8%; text-align: center; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 40px; }
+        .feature-card { background: rgba(15, 23, 42, 0.8); padding: 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
+
+        footer { text-align: center; padding: 40px; color: #94a3b8; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <div class="logo">CampusFind<span>AI</span></div>
+           <ul class="nav-links" id="navLinks">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="post-lost.html">Report Lost</a></li>
+    <li><a href="post-found.html">Report Found</a></li>
+    <li><a href="items.html">Browse Items</a></li> <!-- New Button -->
+</ul>
+
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Lost Something?<br><span>Found Something?</span></h1>
+            <p>An AI-powered campus platform to help reconnect people with their belongings.</p>
+            <div class="hero-buttons">
+                <a href="post-lost.html" class="btn primary">Report Lost Item</a>
+                <a href="post-found.html" class="btn secondary">Report Found Item</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <h2>Why CampusFind AI?</h2>
+        <div class="feature-grid">
+            <div class="feature-card"><h3>📸 Image Upload</h3><p>Upload images easily.</p></div>
+            <div class="feature-card"><h3>🤖 AI Assistance</h3><p>Smart descriptions.</p></div>
+            <div class="feature-card"><h3>🔍 Smart Search</h3><p>Intelligent discovery.</p></div>
+            <div class="feature-card"><h3>⚡ Fast Recovery</h3><p>Reconnect quickly.</p></div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 CampusFind AI | Built for Webathon</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+
+    <script>
+        const navLinks = document.getElementById("navLinks");
+
+        // Use the auth state observer from Firebase directly
+        auth.onAuthStateChanged((user) => {
+            // Clear existing dynamic buttons
+            const dynamicButtons = document.querySelectorAll(".dynamic-auth");
+            dynamicButtons.forEach(btn => btn.remove());
+
+            if (user) {
+                // User is logged in
+                const li = document.createElement("li");
+                li.classList.add("dynamic-auth");
+                li.innerHTML = `
+                    <span style="margin-right:10px; font-size:12px;">${user.email}</span>
+                    <button onclick="logoutUser()" class="nav-btn logout-btn">Logout</button>
+                `;
+                navLinks.appendChild(li);
+            } else {
+                // User is logged out
+                const loginLi = document.createElement("li");
+                loginLi.classList.add("dynamic-auth");
+                loginLi.innerHTML = `<a href="login.html" class="nav-btn login-btn">Login</a>`;
+                
+                const regLi = document.createElement("li");
+                regLi.classList.add("dynamic-auth");
+                regLi.innerHTML = `<a href="register.html" class="nav-btn register-btn">Register</a>`;
+                
+                navLinks.appendChild(loginLi);
+                navLinks.appendChild(regLi);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report Lost Item | CampusFind AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <div class="logo">CampusFind<span>AI</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="post-lost.html" class="active">Report Lost</a></li>
+                <li><a href="post-found.html">Report Found</a></li>
+                <li><a href="items.html">Browse Items</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="form-section">
+        <h1>Report Lost Item</h1>
+        <p>Lost something on campus? Report it and let AI help find it.</p>
+
+        <form id="lostForm" class="item-form">
+
+            <div class="form-group">
+                <label>Item Title</label>
+                <input type="text" id="title" placeholder="e.g. Blue Backpack" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="description" placeholder="Describe your lost item..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <select id="category" required>
+                    <option value="">Select Category</option>
+                    <option value="wallet">Wallet</option>
+                    <option value="phone">Phone</option>
+                    <option value="bag">Bag</option>
+                    <option value="keys">Keys</option>
+                    <option value="id-card">ID Card</option>
+                    <option value="book">Book</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Last Seen Location</label>
+                <input type="text" id="location" placeholder="e.g. Block A, Lab, Bus Stop" required>
+            </div>
+
+            <div class="form-group">
+                <label>Date Lost</label>
+                <input type="date" id="date" required>
+            </div>
+
+            <div class="form-group">
+                <label>Upload Image (optional)</label>
+                <input type="file" id="image" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label>Contact Info</label>
+                <input type="text" id="contact" placeholder="Phone / Email" required>
+            </div>
+
+            <div class="form-actions">
+               <!-- <button type="button" id="aiGenerateBtn" class="btn secondary">
+                    Generate AI Description
+               </button> -->
+                <br><br>
+                <button type="submit" id="submitBtn" class="btn primary">
+                    Submit Lost Item
+                </button>
+            </div>
+
+        </form>
+    </section>
+
+    <footer>
+        <p>© 2026 CampusFind AI | Built for Webathon</p>
+    </footer>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+    <script src="ai.js"></script>
+    <script src="post-lost.js"></script> 
+</body>
+</html>

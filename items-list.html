@@ -1,0 +1,259 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browse Items | CampusFind AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: #020617; color: #e5e7eb; padding: 20px; }
+        
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #38bdf8; text-align: center; margin-bottom: 30px; }
+
+        /* The Grid */
+        .items-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 20px; 
+        }
+
+        /* Item Cards */
+        .item-card { 
+            background: rgba(15, 23, 42, 0.8); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 12px; 
+            padding: 20px; 
+            transition: 0.3s;
+        }
+        .item-card:hover { transform: translateY(-5px); border-color: #38bdf8; }
+        
+        .item-type { 
+            display: inline-block; 
+            padding: 4px 10px; 
+            border-radius: 5px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+        }
+        .type-lost { background: #ef4444; color: white; }
+        .type-found { background: #22c55e; color: white; }
+
+        .item-card h3 { margin-bottom: 8px; color: #38bdf8; }
+        .item-card p { font-size: 14px; color: #94a3b8; margin-bottom: 10px; }
+        .item-card .meta { font-size: 12px; color: #cbd5f5; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Recent Reports</h1>
+        <div class="items-grid" id="itemsGrid">
+            <p style="text-align: center; grid-column: 1/-1;">Loading items...</p>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        const itemsGrid = document.getElementById("itemsGrid");
+
+        // Reference to the 'reports' node in your database
+        // (Make sure this matches the name you used in post-lost.js)
+        const dbRef = firebase.database().ref('items');
+
+        dbRef.on('value', (snapshot) => {
+            itemsGrid.innerHTML = ""; // Clear the "Loading" message
+            
+            const data = snapshot.val();
+            
+            if (!data) {
+                itemsGrid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>No items reported yet.</p>";
+                return;
+            }
+
+            // Loop through the data and build cards
+            Object.keys(data).forEach(key => {
+                const item = data[key];
+                
+                // Determine CSS class for Lost vs Found
+                const typeClass = item.type === 'lost' ? 'type-lost' : 'type-found';
+
+                itemsGrid.innerHTML += `
+                    <div class="item-card">
+                        <span class="item-type ${typeClass}">${item.type.toUpperCase()}</span>
+                        <h3>${item.itemName}</h3>
+                        <p>${item.description}</p>
+                        <div class="meta">
+                            <strong>📍 Location:</strong> ${item.location}<br>
+                            <strong>👤 Reported by:</strong> ${item.userEmail || "Anonymous"}
+                        </div>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html> -->
+
+
+
+
+<!-- 
+<!DOCTYPE html>
+
+<html> <head> <title>Search Items | CampusFind AI</title> <style> body { font-family: sans-serif; background: #020617; color: white; padding: 20px; } .search-area { text-align: center; margin-bottom: 40px; } #searchInput { width: 80%; max-width: 500px; padding: 12px; border-radius: 25px; border: none; } .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; } .card { background: #1e293b; padding: 15px; border-radius: 12px; border: 1px solid #334155; cursor: pointer; transition: 0.3s; } .card:hover { border-color: #38bdf8; transform: translateY(-5px); } .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; } .tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 12px; margin: 10px 0; background: #22c55e; }
+
+    /* Modal for full details */
+    #detailModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000; }
+    .modal-content { background: #0f172a; padding: 30px; border-radius: 15px; max-width: 500px; width: 90%; position: relative; }
+    .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; cursor: pointer; }
+</style>
+</head> <body>
+
+<div class="search-area">
+    <h1>Search Campus Database</h1>
+    <input type="text" id="searchInput" placeholder="Search by title, location or category...">
+</div>
+
+<div class="grid" id="itemsGrid">Loading items...</div>
+
+<div id="detailModal">
+    <div class="modal-content" id="modalBody">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+    </div>
+</div>
+
+<script src="[https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js](https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js)"></script>
+<script src="[https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js](https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js)"></script>
+<script src="firebase-config.js"></script>
+
+<script>
+    let allItems = [];
+    const itemsGrid = document.getElementById('itemsGrid');
+
+    // Fetch everything from DB
+    database.ref("items").on("value", (snapshot) => {
+        const data = snapshot.val();
+        if(!data) { itemsGrid.innerHTML = "No items found."; return; }
+        allItems = Object.values(data).reverse();
+        displayItems(allItems);
+    });
+
+    function displayItems(list) {
+        itemsGrid.innerHTML = "";
+        list.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <img src="${item.imageUrl}">
+                <div class="tag">${item.status}</div>
+                <h3>${item.title}</h3>
+                <p>📍 ${item.location}</p>
+            `;
+            card.onclick = () => showFullDetails(item);
+            itemsGrid.appendChild(card);
+        });
+    }
+
+    // Person B clicks Person A's item to see HOLE (Whole) details
+    function showFullDetails(item) {
+        const modal = document.getElementById('detailModal');
+        const body = document.getElementById('modalBody');
+        body.innerHTML = `
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <img src="${item.imageUrl}" style="width:100%; border-radius:10px;">
+            <h2 style="color:#38bdf8; margin-top:15px;">${item.title}</h2>
+            <p><strong>Status:</strong> ${item.status}</p>
+            <p><strong>Description:</strong> ${item.description}</p>
+            <p><strong>Found at:</strong> ${item.location}</p>
+            <p><strong>Category:</strong> ${item.category}</p>
+            <hr style="border:0; border-top:1px solid #334155; margin:15px 0;">
+            <p><strong>Contact Person:</strong> ${item.reportedBy}</p>
+            <p style="font-size:20px; color:#22c55e;"><strong>Phone: ${item.phone}</strong></p>
+            <button onclick="closeModal()" style="width:100%; padding:10px; margin-top:10px; background:#334155; color:white; border:none; border-radius:5px; cursor:pointer;">Close</button>
+        `;
+        modal.style.display = "flex";
+    }
+
+    function closeModal() { document.getElementById('detailModal').style.display = "none"; }
+
+    // Search logic
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        const filtered = allItems.filter(i => 
+            i.title.toLowerCase().includes(val) || 
+            i.location.toLowerCase().includes(val) || 
+            i.category.toLowerCase().includes(val)
+        );
+        displayItems(filtered);
+    });
+</script>
+</body> </html> -->
+
+
+
+
+<!DOCTYPE html>
+
+<html> <head> <title>Campus Registry | Browse</title> <style> body { font-family: sans-serif; background: #020617; color: white; padding: 20px; } .search-bar { text-align: center; margin-bottom: 30px; } #searchInput { width: 80%; max-width: 500px; padding: 12px; border-radius: 25px; border: 1px solid #334155; background: #0f172a; color: white; } .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; } .card { background: #1e293b; border-radius: 12px; overflow: hidden; border: 1px solid #334155; } .card img { width: 100%; height: 180px; object-fit: cover; } .content { padding: 15px; } .status-Found { color: #22c55e; font-weight: bold; } .status-Lost { color: #ef4444; font-weight: bold; } </style> </head> <body>
+
+<div class="search-bar">
+    <h1>Campus Registry</h1>
+    <input type="text" id="searchInput" placeholder="Search by title, location, or status...">
+</div>
+
+<div class="grid" id="itemsGrid">Loading items...</div>
+
+<script src="[https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js](https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js)"></script>
+<script src="[https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js](https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js)"></script>
+<script src="firebase-config.js"></script>
+
+<script>
+    const itemsGrid = document.getElementById('itemsGrid');
+    let allItems = [];
+
+    // LISTEN TO THE "items" FOLDER
+    database.ref("items").on("value", (snapshot) => {
+        const data = snapshot.val();
+        if (!data) {
+            itemsGrid.innerHTML = "No items found.";
+            return;
+        }
+        allItems = Object.values(data).reverse();
+        render(allItems);
+    });
+
+    function render(list) {
+        itemsGrid.innerHTML = "";
+        list.forEach(item => {
+            itemsGrid.innerHTML += `
+                <div class="card">
+                    <img src="${item.imageUrl}">
+                    <div class="content">
+                        <p class="status-${item.status}">${item.status.toUpperCase()}</p>
+                        <h3>${item.title}</h3>
+                        <p>📍 ${item.location}</p>
+                        <p style="color:#22c55e; margin-top:10px;">📞 Contact: ${item.phone}</p>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // Search Filter
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const filtered = allItems.filter(i => 
+            i.title.toLowerCase().includes(term) || 
+            i.status.toLowerCase().includes(term) ||
+            i.location.toLowerCase().includes(term)
+        );
+        render(filtered);
+    });
+</script>
+</body> </html>
+
+
